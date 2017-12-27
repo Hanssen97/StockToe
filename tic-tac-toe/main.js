@@ -21,7 +21,7 @@ const COLORS      = {
 };
 
 /** Main -----------------------------------------------------------------------
-    Runs the program when the window has loaded
+    Runs the program when the window has loaded.
 
 */
 window.onload = function () {
@@ -30,7 +30,7 @@ window.onload = function () {
 };
 
 /** setup ----------------------------------------------------------------------
-    Sets up the canvas, tiles and the mouse click event handler
+    Sets up the canvas, tiles and the mouse click event handler.
 
 */
 function setup() {
@@ -89,12 +89,12 @@ function play(e) {
   ++gamestate.turn;
   tile.player = player;
 
-  // Check move consequence and render
+  // Check move consequence and render.
   updateMoves(gamestate, player, index);
   render();
   checkWin();
 
-  // Run AI, check move consequence and render
+  // Run AI, check move consequence and render.
   setTimeout(() => {
     ai();
     checkWin();
@@ -108,7 +108,7 @@ function play(e) {
 
     @param {Object} state  The state of a game.
     @param {number} player The player that initiated the move.
-    @param {Object} move   The move details. {score, x, y}
+    @param {Object} move   The move details. {score, x, y}.
 */
 function updateMoves(state, player, move) {
   if (state.moves[player].push({x: move.x, y: move.y}) > 3) {
@@ -189,7 +189,7 @@ function parseSum(sum) {
 /** win ------------------------------------------------------------------------
     initiates a win by resetting the game and providing the winner +1 score.
 
-    @param {number} player The player that won the round
+    @param {number} player The player that won the round.
 */
 function win(player) {
   gamestate.moves = [[],[]];
@@ -224,7 +224,7 @@ function render() {
 }
 
 /** renderHTML -----------------------------------------------------------------
-    Renders all HTML DOM objects
+    Renders all HTML DOM objects.
 
 */
 function renderHTML() {
@@ -244,8 +244,8 @@ function renderTiles() {
     Parses the mouse position coordinates to grid index format and returns the
     indexes.
 
-    @param {event} e The click event
-    @return {Object} The mouse position based on the grid index: {x, y}
+    @param {event} e The click event.
+    @return {Object} The mouse position based on the grid index: {x, y}.
 */
 function getIndex(e){
     let totalOffsetX   = 0;
@@ -277,19 +277,19 @@ function ai() {
   ++gamestate.turn;
   gamestate.tiles[nextMove.x][nextMove.y].player = player;
 
-  // Check move consequence
+  // Check move consequence.
   updateMoves(gamestate, player, nextMove);
 }
 
 /** getBestMove ----------------------------------------------------------------
     Recursive function that returns a set of moves with equal score if the
     search depth is 0. The function returns the best move when its in a search
-    deeper than 0. The function runs through every possible play with
-    (const)SEARCHDEPTH moves and calculates the score of each play with a
+    deeper than 0. The function runs through every possible game with
+    (const)SEARCHDEPTH moves and calculates the score of each game with a
     exponential scoring formula. The formula emphasizes close consequences more
-    than far consequences, and a close loss is more valuable than a close win.
-    The algorithm chooses a path where it does not loose, and cherry picks a
-    path with the play that results in best possibilities for a win.
+    than far consequences, and a loss is more valuable than a win.
+    The algorithm chooses a path where it does not loose, and cherry picks the move
+    that results in the best possibility for a win.
 
     @param s           The state of a game.
     @param depth       The current depth of a search.
@@ -300,8 +300,8 @@ function getBestMove(s, depth) {
   let bestMove = {score:0, x:-1, y:-1};
   if (depth > SEARCHDEPTH) return bestMove; // Deepest point in the path.
 
-  let x = 0, y = 0; // Itterators
-  let player = (s.turn+depth) % 2; // Current player
+  let x = 0, y = 0; // Itterators.
+  let player = (s.turn+depth) % 2; // Current player.
 
   if (depth === 0 ) {
     // This is the root node, so we minimize the score and init the ret array.
@@ -311,24 +311,24 @@ function getBestMove(s, depth) {
     // This is somewhere in a path, so we validate the position.
     let winner = validate(s.tiles);
 
-    // If there is a winner, return a move with a score based the formula.
+    // If there is a winner, return the move with a score based the formula.
     if      ( winner === 1 ) return {score:Math.pow((SEARCHDEPTH-depth),3), x, y};
     else if ( winner === 0 ) return {score:Math.pow((SEARCHDEPTH-depth),4)*-1, x, y};
   }
 
-  // This is not a win/loss, so we continue the path.
+  // This is not a win/loss, so we extend the path.
   for (; x < GRIDCOUNT; ++x) {
     for (y = 0; y < GRIDCOUNT; ++y) {
       if (s.tiles[x][y].player !== -10) continue; // This tile is occupied... next.
 
-      // This move is legal so we search this path.
+      // This tile is not occupied, so we search this path.
       let state = JSON.parse(JSON.stringify(s));  // Immutable copy the state.
 
-      state.tiles[x][y].player = player; // Plays this move.
+      state.tiles[x][y].player = player; // Play this move.
 
-      updateMoves(state, player, {x,y}); // Checks consequences.
+      updateMoves(state, player, {x,y}); // Check consequences.
 
-      let move = getBestMove(state, depth+1); // Validates best path for this node.
+      let move = getBestMove(state, depth+1); // Validate best path for this node.
 
       if (depth === 0) {
         // This is the root node, so we compare this move with the best one soo far.
