@@ -1,5 +1,4 @@
 "use strict";
-/*jshint esversion: 6 */
 
 // Globals
 var canvas, ctx;
@@ -21,11 +20,13 @@ const COLORS      = {
   purple: "#BF55EC",
 };
 
+
 // Main -----------------------------------------------------------------------
 window.onload = function () {
   setup();
   render();
 };
+
 
 // setup ----------------------------------------------------------------------
 function setup() {
@@ -36,6 +37,7 @@ function setup() {
 
   canvas.addEventListener("click", (e) => play(e), false);
 }
+
 
 // Tile -----------------------------------------------------------------------
 function Tile(x, y) {
@@ -61,6 +63,7 @@ function Tile(x, y) {
   };
 }
 
+
 // play -----------------------------------------------------------------------
 function play(e) {
   let player = gamestate.turn % 2;
@@ -85,6 +88,7 @@ function play(e) {
   }, 300);
 }
 
+
 // updateMoves ----------------------------------------------------------------
 function updateMoves(state, player, move) {
   if (state.moves[player].push({x: move.x, y: move.y}) > 3) {
@@ -92,6 +96,14 @@ function updateMoves(state, player, move) {
     state.tiles[tile.x][tile.y].player = -10;
   }
 }
+
+
+// checkWin -------------------------------------------------------------------
+function checkWin() {
+  let winner = validate(gamestate.tiles);
+  if (winner !== -10) win(winner);
+}
+
 
 // Validate -------------------------------------------------------------------
 function validate(tiles) {
@@ -128,11 +140,6 @@ function validate(tiles) {
   return -10;
 }
 
-// checkWin -------------------------------------------------------------------
-function checkWin() {
-  let winner = validate(gamestate.tiles);
-  if (winner !== -10) win(winner);
-}
 
 // parseSum -------------------------------------------------------------------
 function parseSum(sum) {
@@ -142,12 +149,14 @@ function parseSum(sum) {
   return -10;
 }
 
+
 // win ------------------------------------------------------------------------
 function win(player) {
   gamestate.moves = [[],[]];
   ++gamestate.score[player];
   setTimeout(() => {constructGrid(); render();}, 200);
 }
+
 
 // constructGrid --------------------------------------------------------------
 function constructGrid() {
@@ -161,6 +170,7 @@ function constructGrid() {
     gamestate.tiles.push(column);
   }
 }
+
 
 // render ---------------------------------------------------------------------
 function render() {
@@ -179,6 +189,7 @@ function renderTiles() {
   }));
 }
 
+
 // getIndex -------------------------------------------------------------------
 function getIndex(e){
     let totalOffsetX   = 0;
@@ -196,6 +207,7 @@ function getIndex(e){
     return {x:canvasX, y:canvasY};
 }
 
+
 // ai -------------------------------------------------------------------------
 function ai() {
   let nextMoves = getBestMove(gamestate, 0);
@@ -210,16 +222,17 @@ function ai() {
   updateMoves(gamestate, player, nextMove);
 }
 
+
 // getBestMove ----------------------------------------------------------------
 function getBestMove(s, depth) {
+  let bestMove = {score:0, x:-1, y:-1};
+  if (depth > SEARCHDEPTH) return bestMove;
+
   let x = 0, y = 0;
   let player = (s.turn+depth) % 2;
-  let bestMove = {score:0, x:-1, y:-1};
   let bestMoves = [bestMove];
 
-  if (depth > SEARCHDEPTH) {
-    return bestMove;
-  } else if (depth === 0 ) {
+  if (depth === 0 ) {
     bestMove.score = -1000000;
   } else {
     let winner = validate(s.tiles);
@@ -244,8 +257,7 @@ function getBestMove(s, depth) {
         if (move.score > bestMove.score) {
           bestMove = {score:move.score, x, y};
           bestMoves= [bestMove];
-        }
-        else if (move.score === bestMove.score) {
+        } else if (move.score === bestMove.score) {
           bestMoves.push({score:move.score, x, y});
         }
       } else {
