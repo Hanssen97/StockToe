@@ -306,14 +306,14 @@ function getBestMove(s, depth) {
   if (depth === 0 ) {
     // This is the root node, so we minimize the score and init the ret array.
     bestMove.score = -1000000;
-    let bestMoves = [bestMove];
+    var bestMoves = [bestMove];
   } else {
     // This is somewhere in a path, so we validate the position.
     let winner = validate(s.tiles);
 
     // If there is a winner, return the move with a score based the formula.
-    if      ( winner === 1 ) return {score:Math.pow((SEARCHDEPTH-depth),3), x, y};
-    else if ( winner === 0 ) return {score:Math.pow((SEARCHDEPTH-depth),4)*-1, x, y};
+    if      ( winner === player+1 ) return {score:Math.pow((SEARCHDEPTH-depth),3), x, y};
+    else if ( winner === player ) return {score:Math.pow((SEARCHDEPTH-depth),4)*-1, x, y};
   }
 
   // This is not a win/loss, so we extend the path.
