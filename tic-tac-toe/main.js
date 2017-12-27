@@ -76,14 +76,12 @@ function play(e) {
   tile.player = player;
 
   updateMoves(gamestate, player, index);
-
   render();
   checkWin();
 
   setTimeout(() => {
     ai();
     checkWin();
-
     render();
   }, 300);
 }
@@ -145,7 +143,6 @@ function validate(tiles) {
 function parseSum(sum) {
   if      (sum === 3) return 1;
   else if (sum === 0) return 0;
-
   return -10;
 }
 
@@ -184,9 +181,7 @@ function renderHTML() {
 }
 // renderTiles ----------------------------------------------------------------
 function renderTiles() {
-  gamestate.tiles.map(tiles => tiles.map(tile => {
-      tile.render();
-  }));
+  gamestate.tiles.map(tiles => tiles.map(tile => tile.render()));
 }
 
 
@@ -201,10 +196,10 @@ function getIndex(e){
         totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
     } while (currentElement = currentElement.offsetParent);
 
-    let canvasX = Math.floor( (event.pageX - totalOffsetX) / TILESIZE );
-    let canvasY = Math.floor( (event.pageY - totalOffsetY) / TILESIZE );
+    let x = Math.floor( (event.pageX - totalOffsetX) / TILESIZE );
+    let y = Math.floor( (event.pageY - totalOffsetY) / TILESIZE );
 
-    return {x:canvasX, y:canvasY};
+    return {x, y};
 }
 
 
@@ -212,12 +207,10 @@ function getIndex(e){
 function ai() {
   let nextMoves = getBestMove(gamestate, 0);
   let nextMove  = nextMoves[Math.floor(Math.random()*nextMoves.length)];
-
-  let tile   = gamestate.tiles[nextMove.x][nextMove.y];
   let player = gamestate.turn % 2;
 
-  tile.player = player;
   ++gamestate.turn;
+  gamestate.tiles[nextMove.x][nextMove.y].player = player;
 
   updateMoves(gamestate, player, nextMove);
 }
