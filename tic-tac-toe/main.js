@@ -20,15 +20,21 @@ const COLORS      = {
   purple: "#BF55EC",
 };
 
+/** Main -----------------------------------------------------------------------
+    description
 
-// Main -----------------------------------------------------------------------
+    @author Jørgen Hanssen
+*/
 window.onload = function () {
   setup();
   render();
 };
 
+/** setup ----------------------------------------------------------------------
+    description
 
-// setup ----------------------------------------------------------------------
+    @author Jørgen Hanssen
+*/
 function setup() {
   canvas = document.getElementById("board");
   ctx    = canvas.getContext("2d");
@@ -38,8 +44,11 @@ function setup() {
   canvas.addEventListener("click", (e) => play(e), false);
 }
 
+/** Tile -----------------------------------------------------------------------
+    #description
 
-// Tile -----------------------------------------------------------------------
+    @author Jørgen Hanssen
+*/
 function Tile(x, y) {
   this.x      =   x;
   this.y      =   y;
@@ -63,8 +72,11 @@ function Tile(x, y) {
   };
 }
 
+/** play -----------------------------------------------------------------------
+    #description
 
-// play -----------------------------------------------------------------------
+    @author Jørgen Hanssen
+*/
 function play(e) {
   let player = gamestate.turn % 2;
   let index = getIndex(e);
@@ -86,8 +98,11 @@ function play(e) {
   }, 300);
 }
 
+/** updateMoves ----------------------------------------------------------------
+    #description
 
-// updateMoves ----------------------------------------------------------------
+    @author Jørgen Hanssen
+*/
 function updateMoves(state, player, move) {
   if (state.moves[player].push({x: move.x, y: move.y}) > 3) {
     let tile = state.moves[player].shift();
@@ -95,15 +110,21 @@ function updateMoves(state, player, move) {
   }
 }
 
+/** checkWin -------------------------------------------------------------------
+    #description
 
-// checkWin -------------------------------------------------------------------
+    @author Jørgen Hanssen
+*/
 function checkWin() {
   let winner = validate(gamestate.tiles);
   if (winner !== -10) win(winner);
 }
 
+/** validate -------------------------------------------------------------------
+    #description
 
-// Validate -------------------------------------------------------------------
+    @author Jørgen Hanssen
+*/
 function validate(tiles) {
   let winner = 0,  sum = 0,  i = 0,  k = 0;
 
@@ -138,24 +159,33 @@ function validate(tiles) {
   return -10;
 }
 
+/** parseSum -------------------------------------------------------------------
+    #description
 
-// parseSum -------------------------------------------------------------------
+    @author Jørgen Hanssen
+*/
 function parseSum(sum) {
   if      (sum === 3) return 1;
   else if (sum === 0) return 0;
   return -10;
 }
 
+/** win ------------------------------------------------------------------------
+    description
 
-// win ------------------------------------------------------------------------
+    @author Jørgen Hanssen
+*/
 function win(player) {
   gamestate.moves = [[],[]];
   ++gamestate.score[player];
   setTimeout(() => {constructGrid(); render();}, 200);
 }
 
+/** constructGrid --------------------------------------------------------------
+    #description
 
-// constructGrid --------------------------------------------------------------
+    @author Jørgen Hanssen
+*/
 function constructGrid() {
   gamestate.tiles = [];
   for (let i = 0; i < GRIDCOUNT; ++i) {
@@ -168,24 +198,40 @@ function constructGrid() {
   }
 }
 
+/** render ---------------------------------------------------------------------
+    #description
 
-// render ---------------------------------------------------------------------
+    @author Jørgen Hanssen
+*/
 function render() {
   renderHTML();
   renderTiles();
 }
-// renderHTML -----------------------------------------------------------------
+
+/** renderHTML -----------------------------------------------------------------
+    description
+
+    @author Jørgen Hanssen
+*/
 function renderHTML() {
   document.getElementById("s1").innerHTML = gamestate.score[0];
   document.getElementById("s2").innerHTML = gamestate.score[1];
 }
-// renderTiles ----------------------------------------------------------------
+
+/** renderTiles ----------------------------------------------------------------
+    #description
+
+    @author Jørgen Hanssen
+*/
 function renderTiles() {
   gamestate.tiles.map(tiles => tiles.map(tile => tile.render()));
 }
 
+/** getIndex -------------------------------------------------------------------
+    #description
 
-// getIndex -------------------------------------------------------------------
+    @author Jørgen Hanssen
+*/
 function getIndex(e){
     let totalOffsetX   = 0;
     let totalOffsetY   = 0;
@@ -202,8 +248,11 @@ function getIndex(e){
     return {x, y};
 }
 
+/** ai -------------------------------------------------------------------------
+    #description
 
-// ai -------------------------------------------------------------------------
+    @author Jørgen Hanssen
+*/
 function ai() {
   let nextMoves = getBestMove(gamestate, 0);
   let nextMove  = nextMoves[Math.floor(Math.random()*nextMoves.length)];
@@ -215,8 +264,11 @@ function ai() {
   updateMoves(gamestate, player, nextMove);
 }
 
+/** getBestMove ----------------------------------------------------------------
+    #description
 
-// getBestMove ----------------------------------------------------------------
+    @author Jørgen Hanssen
+*/
 function getBestMove(s, depth) {
   let bestMove = {score:0, x:-1, y:-1};
   if (depth > SEARCHDEPTH) return bestMove;
