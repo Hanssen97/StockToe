@@ -332,29 +332,29 @@ function getBestMove(s, depth) {
     else if ( winner === 0 ) return {score:Math.pow((SEARCHDEPTH-depth),4)*-1, x, y};
   }
 
-  // Itterate through every tile.
+  // This is not a win/loss, so we continue the path.
   for (; x < GRIDCOUNT; ++x) {
     for (y = 0; y < GRIDCOUNT; ++y) {
-      if (s.tiles[x][y].player !== -10) continue; // This tile is occupied.
+      if (s.tiles[x][y].player !== -10) continue; // This tile is occupied... next.
 
-      // This play is legal so we search this path.
+      // This move is legal so we search this path.
       let state = JSON.parse(JSON.stringify(s));  // Immutable copy the state.
 
       state.tiles[x][y].player = player; // Plays this move.
 
       updateMoves(state, player, {x,y}); // Checks consequences.
 
-      let move = getBestMove(state, depth+1); // Validates best move for this path.
+      let move = getBestMove(state, depth+1); // Validates best path for this node.
 
       if (depth === 0) {
         // This is the root node, so we compare this move with the best one soo far.
         if (move.score > bestMove.score) {
-          // This move is better than the currently best, so we clear the previous
-          //   entries and insert this move.
+          // This move is better than the current best, so we clear the previous
+          //   entries and insert this move as the best one.
           bestMove = {score:move.score, x, y};
           bestMoves= [bestMove];
         } else if (move.score === bestMove.score) {
-          // This move is equally as good as our currently best, so we insert this move.
+          // This move is equally as good as our current best, so we insert this move.
           bestMoves.push({score:move.score, x, y});
         }
       } else {
@@ -365,5 +365,5 @@ function getBestMove(s, depth) {
   }
   if (depth === 0) return bestMoves; // This is the root node so we return the list.
 
-  return bestMove; // This is a possible play so we return the best Move.
+  return bestMove; // This is a path so we return the best move for this path.
 }
