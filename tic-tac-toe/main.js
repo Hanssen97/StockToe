@@ -23,7 +23,6 @@ const COLORS      = {
 /** Main -----------------------------------------------------------------------
     Runs the program when the window has loaded
 
-    @author Jørgen Hanssen
 */
 window.onload = function () {
   setup();
@@ -33,7 +32,6 @@ window.onload = function () {
 /** setup ----------------------------------------------------------------------
     Sets up the canvas, tiles and the mouse click event handler
 
-    @author Jørgen Hanssen
 */
 function setup() {
   canvas = document.getElementById("board");
@@ -47,7 +45,6 @@ function setup() {
 /** Tile -----------------------------------------------------------------------
     Object that is used as squares in the game.
 
-    @author Jørgen Hanssen
     @param {number} x The x position of the square.
     @param {number} y The y position of the square.
 */
@@ -78,7 +75,6 @@ function Tile(x, y) {
     Controls and initiates a players move, then renders the move and runs the
     ai for counter-play.
 
-    @author Jørgen Hanssen
     @param {event} e The click event.
 */
 function play(e) {
@@ -110,7 +106,6 @@ function play(e) {
     Pushes a move into a FIFO list for the current player and pops the oldest
     move if the list exceeds a length of 3.
 
-    @author Jørgen Hanssen
     @param {Object} state  The state of a game.
     @param {number} player The player that initiated the move.
     @param {Object} move   The move details. {score, x, y}
@@ -126,7 +121,6 @@ function updateMoves(state, player, move) {
     Validates the current state of the game and initiates a win if there is a
     winner.
 
-    @author Jørgen Hanssen
 */
 function checkWin() {
   let winner = validate(gamestate.tiles);
@@ -137,7 +131,6 @@ function checkWin() {
     Validates a set of tiles and returns the winner if the tiles are in a
     winning position. (Otherwise returns -10).
 
-    @author Jørgen Hanssen
     @param {Object[][]} tiles A set of Tile objects of a game state.
     @return {number} The winner if in winning position, else -10.
 */
@@ -184,7 +177,6 @@ function validate(tiles) {
     Parses a sum of Tile.player and returns a player based on winning
     conditions.
 
-    @author Jørgen Hanssen
     @param {number} sum The sum of a Tile row, column or diagonal.
     @return {number} The winner if in winning position, else -10.
 */
@@ -197,8 +189,7 @@ function parseSum(sum) {
 /** win ------------------------------------------------------------------------
     initiates a win by resetting the game and providing the winner +1 score.
 
-    @author Jørgen Hanssen
-    @param {number} player the player that won the round
+    @param {number} player The player that won the round
 */
 function win(player) {
   gamestate.moves = [[],[]];
@@ -210,7 +201,6 @@ function win(player) {
     Resets and constructs a grid of Tiles, then pushes it to the global game
     state.
 
-    @author Jørgen Hanssen
 */
 function constructGrid() {
   gamestate.tiles = [];
@@ -227,7 +217,6 @@ function constructGrid() {
 /** render ---------------------------------------------------------------------
     Controls and initiates all render functions.
 
-    @author Jørgen Hanssen
 */
 function render() {
   renderHTML();
@@ -237,7 +226,6 @@ function render() {
 /** renderHTML -----------------------------------------------------------------
     Renders all HTML DOM objects
 
-    @author Jørgen Hanssen
 */
 function renderHTML() {
   document.getElementById("s1").innerHTML = gamestate.score[0];
@@ -247,7 +235,6 @@ function renderHTML() {
 /** renderTiles ----------------------------------------------------------------
     Renders all tiles in the game state.
 
-    @author Jørgen Hanssen
 */
 function renderTiles() {
   gamestate.tiles.map(tiles => tiles.map(tile => tile.render()));
@@ -257,7 +244,6 @@ function renderTiles() {
     Parses the mouse position coordinates to grid index format and returns the
     indexes.
 
-    @author Jørgen Hanssen
     @param {event} e The click event
     @return {Object} The mouse position based on the grid index: {x, y}
 */
@@ -281,7 +267,6 @@ function getIndex(e){
     initiates ai counter-play by gathering the best moves and playing one of
     them. The ai selects one of the moves randomly for more dynamic gameplay.
 
-    @author Jørgen Hanssen
 */
 function ai() {
   let nextMoves = getBestMove(gamestate, 0);
@@ -306,11 +291,10 @@ function ai() {
     The algorithm chooses a path where it does not loose, and cherry picks a
     path with the play that results in best possibilities for a win.
 
-    @author Jørgen Hanssen
-    @param s     The state of a game
-    @param depth The current depth of a search
-    @return (depth  > 0) The best move of the current path
-    @return (depth == 0) A set of the best possible moves (equals).
+    @param s           The state of a game.
+    @param depth       The current depth of a search.
+    @return {Object}   (depth  > 0) The best move of the current path.
+    @return {Object[]} (depth == 0) A set of the best possible moves.
 */
 function getBestMove(s, depth) {
   let bestMove = {score:0, x:-1, y:-1};
