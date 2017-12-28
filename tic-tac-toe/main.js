@@ -94,12 +94,8 @@ function play(e) {
   render();
   checkWin();
 
-  // Run AI, check move consequence and render.
-  setTimeout(() => {
-    ai();
-    checkWin();
-    render();
-  }, 300);
+  // Run AI, check move consequence, and render.
+    //setTimeout(() => ai(), 300);
 }
 
 /** updateMoves ----------------------------------------------------------------
@@ -194,7 +190,7 @@ function parseSum(sum) {
 function win(player) {
   gamestate.moves = [[],[]];
   ++gamestate.score[player];
-  setTimeout(() => {constructGrid(); render();}, 200);
+  setTimeout(() => {constructGrid(); render();}, 100);
 }
 
 /** constructGrid --------------------------------------------------------------
@@ -269,16 +265,21 @@ function getIndex(e){
 
 */
 function ai() {
-  let nextMoves = getBestMove(gamestate, 0);
-  let nextMove  = nextMoves[Math.floor(Math.random()*nextMoves.length)];
+  let bestMoves = getBestMove(gamestate, 0);
+  let nextMove  = bestMoves[Math.floor(Math.random()*bestMoves.length)];
   let player = gamestate.turn % 2;
 
   // Move is initiated.
   ++gamestate.turn;
   gamestate.tiles[nextMove.x][nextMove.y].player = player;
 
-  // Check move consequence.
+  // Check move consequence and render.
   updateMoves(gamestate, player, nextMove);
+  checkWin();
+  render();
+
+  // UNCOMMENT TO LET THE AI PLAY AGAINST ITSELF AFTER FIRST HUMAN MOVE.
+    //setTimeout(() => ai(), 200);
 }
 
 /** getBestMove ----------------------------------------------------------------
@@ -301,19 +302,21 @@ function getBestMove(s, depth) {
   if (depth > SEARCHDEPTH) return bestMove; // Deepest point in the path.
 
   let x = 0, y = 0; // Itterators.
-  let player = (s.turn+depth) % 2; // Current player.
+  let player = (s.turn+depth) % 2;    // Current player for this move.
+  let gPlayer = (gamestate.turn) % 2; // Global current player.
 
   if (depth === 0 ) {
     // This is the root node, so we minimize the score and init the ret array.
-    bestMove.score = -1000000;
+    bestMove.score = Math.pow(20,SEARCHDEPTH)*-1;
     var bestMoves = [bestMove];
+
   } else {
     // This is somewhere in a path, so we validate the position.
     let winner = validate(s.tiles);
 
     // If there is a winner, return the move with a score based the formula.
-    if      ( winner === player+1 ) return {score:Math.pow((SEARCHDEPTH-depth),3), x, y};
-    else if ( winner === player ) return {score:Math.pow((SEARCHDEPTH-depth),4)*-1, x, y};
+    if      ( winner == gPlayer )     return {score:(Math.pow(2,(SEARCHDEPTH-depth)/2)), x, y};
+    else if ( winner == +(!gPlayer) ) return {score:(Math.pow(3,(SEARCHDEPTH-depth))*-1), x, y};
   }
 
   // This is not a win/loss, so we extend the path.
