@@ -307,7 +307,7 @@ function getBestMove(s, depth) {
 
   if (depth === 0 ) {
     // This is the root node, so we minimize the score and init the ret array.
-    bestMove.score = Math.pow(20,SEARCHDEPTH)*-1;
+    bestMove.score = Math.pow(4,SEARCHDEPTH)*-1;
     var bestMoves = [bestMove];
 
   } else {
