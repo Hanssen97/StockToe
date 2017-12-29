@@ -95,7 +95,7 @@ function play(e) {
   checkWin();
 
   // Run AI, check move consequence, and render.
-    //setTimeout(() => ai(), 300);
+    setTimeout(() => ai(), 300);
 }
 
 /** updateMoves ----------------------------------------------------------------
