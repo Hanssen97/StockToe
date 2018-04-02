@@ -10,7 +10,7 @@ var gamestate = {
 };
 
 // Constants
-const SEARCHDEPTH =   6;
+const SEARCHDEPTH =   5;
 const GRIDCOUNT   =   3;
 const BOARDSIZE   = 600;
 const TILESIZE    = BOARDSIZE / GRIDCOUNT;
